@@ -31,11 +31,12 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.authorizeRequests()
             .antMatchers("/static/**", "/webjars/**", "/badbrowser").permitAll()
+            .antMatchers("/swagger-ui**").permitAll()
+                .antMatchers("/v2/api-docs").permitAll()
             .antMatchers("/public/**").permitAll()
             .antMatchers("/admin/**").hasRole("ADMIN")
             .antMatchers("/logout").authenticated()
-            .antMatchers("/login").anonymous()
-            .antMatchers("/**").authenticated();
+            .antMatchers("/login").anonymous();
         http.formLogin()
                 // указываем страницу с формой логина
                 .loginPage("/login")
@@ -58,6 +59,8 @@ public class SecurityConfigure extends WebSecurityConfigurerAdapter {
                 // делаем не валидной текущую сессию
                 .invalidateHttpSession(true);
         http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry());
+
+        http.headers().frameOptions().disable();
     }
 
     @Bean

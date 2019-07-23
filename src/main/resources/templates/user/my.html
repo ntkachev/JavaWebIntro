@@ -4,8 +4,8 @@
 <head th:replace="fragments/head :: head(~{::title},~{::link}, ~{::script})">
     <title>Персональные данные</title>
 
-    <script th:src="@{/js/validate_fields.js}"></script>
-    <script th:src="@{/js/admin/user/user-controller.js}"></script>
+    <script th:src="@{/static/js/validate_fields.js}"></script>
+    <script th:src="@{/static/js/admin/user/user-controller.js}"></script>
 </head>
 <body>
 <header th:replace="fragments/header :: header(my, user)"></header>
@@ -15,12 +15,12 @@
         <div class="main-content-inner">
             <div class="page-content">
                 <div class="col-xs-12">
-                    <div th:replace="fragments/userFields :: userFields('my/')"></div>
+                    <div th:replace="fragments/card/user :: userFields('my/')"></div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<link rel="stylesheet" type="text/css" th:href="@{/css/form.css}"/>
+<link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}"/>
 </body>
 </html>

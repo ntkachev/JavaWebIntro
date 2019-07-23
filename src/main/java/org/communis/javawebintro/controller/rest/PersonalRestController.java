@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 public class PersonalRestController {
@@ -25,21 +27,25 @@ public class PersonalRestController {
         this.personalService = personalService;
     }
 
-    @RequestMapping(value = "/my", method = RequestMethod.PATCH)
-    public void editPersonal(@Valid UserWrapper userWrapper, BindingResult bindingResult)
-            throws InvalidDataException, ServerException {
+    @RequestMapping(value = "/my", method = RequestMethod.POST)
+    public void editPersonal(@Valid UserWrapper userWrapper, BindingResult bindingResult,
+                             HttpServletResponse response)
+            throws InvalidDataException, IOException, ServerException {
         if (bindingResult.hasErrors()) {
             throw new InvalidDataException(ErrorInformationBuilder.build(ErrorCodeConstants.DATA_VALIDATE_ERROR));
         }
+        response.sendRedirect("/my/");
         personalService.edit(userWrapper);
     }
 
-    @RequestMapping(value = "/my/password", method = RequestMethod.PATCH)
-    public void changePassword(@Valid UserPasswordWrapper passwordWrapper, BindingResult bindingResult)
-            throws ServerException, InvalidDataException {
+    @RequestMapping(value = "/my/password", method = RequestMethod.POST)
+    public void changePassword(@Valid UserPasswordWrapper passwordWrapper, BindingResult bindingResult,
+                               HttpServletResponse response)
+            throws ServerException, IOException, InvalidDataException {
         if (bindingResult.hasErrors()) {
             throw new InvalidDataException(ErrorInformationBuilder.build(ErrorCodeConstants.DATA_VALIDATE_ERROR));
         }
+        response.sendRedirect("/my/");
         personalService.changePassword(passwordWrapper);
     }
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -23,14 +25,15 @@ public class LdapRestController {
         this.ldapService = ldapService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public Long add(LdapAuthWrapper ldapAuth) throws ServerException {
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public Long add(LdapAuthWrapper ldapAuth, HttpServletResponse response) throws ServerException, IOException {
+        response.sendRedirect("/admin/ldap/");
         return ldapService.add(ldapAuth);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.PATCH)
-    public void edit(LdapAuthWrapper ldapAuth) throws ServerException {
-        System.out.println(ldapAuth);
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public void edit(LdapAuthWrapper ldapAuth, HttpServletResponse response) throws ServerException, IOException {
+        response.sendRedirect("/admin/ldap/");
         ldapService.edit(ldapAuth);
     }
 

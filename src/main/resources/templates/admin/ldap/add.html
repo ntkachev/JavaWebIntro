@@ -7,8 +7,8 @@
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/form.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/permissions.css}"/>
 
-    <script th:src="@{/static/js/admin/ldap/ldap-service.js}"></script>
-    <script th:src="@{/static/js/admin/ldap/ldap-controller.js}"></script>
+<!--    <script th:src="@{/static/js/admin/ldap/ldap-service.js}"></script>-->
+    <script th:src="@{/static/js/admin/ldap/controller.js}"></script>
 </head>
 <body>
 <header th:replace="fragments/header :: header(ldap, admin)"></header>
@@ -22,7 +22,7 @@
             </div>
         </div>
     </nav>
-    <form id="ldap-form" class="form-horizontal" method="POST" th:action="@{/admin/ldap}">
+    <form id="ldap-form" class="form-horizontal" method="POST" th:action="@{/admin/ldap/add}">
         <div th:replace="fragments/card/ldap :: ldapFields"></div>
     </form>
 </div>

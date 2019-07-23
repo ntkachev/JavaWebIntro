@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping(value = "admin/users")
@@ -28,29 +30,34 @@ public class UserRestController {
         this.userService = userService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public void add(@Valid UserWrapper userWrapper, BindingResult bindingResult) throws InvalidDataException, ServerException {
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
+    public void add(@Valid UserWrapper userWrapper, BindingResult bindingResult, HttpServletResponse response)
+            throws InvalidDataException, IOException, ServerException {
         if (bindingResult.hasErrors()) {
             throw new InvalidDataException(ErrorInformationBuilder.build(ErrorCodeConstants.DATA_VALIDATE_ERROR));
         }
+        response.sendRedirect("/admin/users/");
         userService.add(userWrapper);
     }
 
-    @RequestMapping(value = "", method = RequestMethod.PATCH)
-    public void editPersonal(@Valid UserWrapper userWrapper, BindingResult bindingResult)
-            throws InvalidDataException, NotFoundException, ServerException {
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
+    public void editPersonal(@Valid UserWrapper userWrapper, BindingResult bindingResult, HttpServletResponse response)
+            throws InvalidDataException, IOException, NotFoundException, ServerException {
         if (bindingResult.hasErrors()) {
             throw new InvalidDataException(ErrorInformationBuilder.build(ErrorCodeConstants.DATA_VALIDATE_ERROR));
         }
+        response.sendRedirect("/admin/users/");
         userService.edit(userWrapper);
     }
 
-    @RequestMapping(value = "/password", method = RequestMethod.PATCH)
-    public void changePassword(@Valid UserPasswordWrapper passwordWrapper, BindingResult bindingResult)
-            throws InvalidDataException, NotFoundException, ServerException {
+    @RequestMapping(value = "/edit/password", method = RequestMethod.POST)
+    public void changePassword(@Valid UserPasswordWrapper passwordWrapper, BindingResult bindingResult,
+                               HttpServletResponse response)
+            throws InvalidDataException, IOException, NotFoundException, ServerException {
         if (bindingResult.hasErrors()) {
             throw new InvalidDataException(ErrorInformationBuilder.build(ErrorCodeConstants.DATA_VALIDATE_ERROR));
         }
+        response.sendRedirect("/admin/users/");
         userService.changePassword(passwordWrapper);
     }
 

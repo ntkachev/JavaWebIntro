@@ -2,17 +2,13 @@ package org.communis.javawebintro.controller.rest;
 
 import org.communis.javawebintro.dto.LdapAuthWrapper;
 import org.communis.javawebintro.dto.UserWrapper;
-import org.communis.javawebintro.entity.EntityContainer;
-import org.communis.javawebintro.entity.LdapAuth;
 import org.communis.javawebintro.exception.ServerException;
 import org.communis.javawebintro.service.EntityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "entities")
-//@SessionAttributes("entityId")
 public class EntityRestController {
 
     private final EntityService entityService;
@@ -61,15 +57,4 @@ public class EntityRestController {
     public void setCurrentToMain() throws ServerException {
         entityService.setCurrentToMain();
     }
-
-//    @RequestMapping(value = "/current", method = RequestMethod.POST)
-//    public void updateEntity(EntityContainer container)//, @ModelAttribute("entityId") int entityId)
-//            throws ServerException {
-//        entityService.setEntity(entityService.getCurrentEntityId(), container);
-//    }
-//
-//    @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-//    public void updateEntity(int id, EntityContainer container) throws ServerException {
-//        entityService.setEntity(id, container);
-//    }
 }

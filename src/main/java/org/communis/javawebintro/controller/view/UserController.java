@@ -7,6 +7,7 @@ import org.communis.javawebintro.enums.UserAuth;
 import org.communis.javawebintro.enums.UserRole;
 import org.communis.javawebintro.enums.UserStatus;
 import org.communis.javawebintro.exception.ServerException;
+import org.communis.javawebintro.service.EntityService;
 import org.communis.javawebintro.service.LdapService;
 import org.communis.javawebintro.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,18 @@ public class UserController {
 
     private final UserService userService;
     private final LdapService ldapService;
+    private final EntityService entityService;
 
     @Autowired
-    public UserController(UserService userService, LdapService ldapService) {
+    public UserController(UserService userService, LdapService ldapService, EntityService entityService) {
         this.userService = userService;
         this.ldapService = ldapService;
+        this.entityService = entityService;
     }
 
     @RequestMapping(value = "")
     public ModelAndView list(Pageable pageable, UserFilterWrapper filterUserWrapper) throws ServerException {
+        entityService.setCurrentToUserList();
         ModelAndView usersPage = new ModelAndView(USER_VIEWS_PATH + "list");
         usersPage.addObject("filter", filterUserWrapper);
         usersPage.addObject("page", userService.getPageByFilter(pageable, filterUserWrapper));
@@ -42,8 +46,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView addPage() {
-        return addPageFromWrapper(new UserWrapper());
+    public ModelAndView addPage() throws ServerException {
+        UserWrapper user = new UserWrapper();
+        entityService.setCurrentToUserAddition(user);
+        return addPageFromWrapper(user);
     }
 
     public ModelAndView addPageFromWrapper(UserWrapper user) {
@@ -61,7 +67,9 @@ public class UserController {
 
         @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView editPage(@PathVariable("id") Long id) throws ServerException {
-        return editPageFromWrapper(userService.getById(id));
+        UserWrapper user = userService.getById(id);
+        entityService.setCurrentToUserEditing(user);
+        return editPageFromWrapper(user);
     }
 
     public ModelAndView editPageFromWrapper(UserWrapper user) throws ServerException {

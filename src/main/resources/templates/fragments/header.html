@@ -26,12 +26,12 @@
                        sec:authorize="hasRole('ROLE_ANONYMOUS')">Войти</a>
                 </div>
             </li>
-            <li th:class="${item == 'test1'} ? 'active' : ''" sec:authorize="hasRole('ROLE_ANONYMOUS')">
-                <a th:href="@{/test1}">Test 1</a>
-            </li>
-            <li th:class="${item == 'test2'} ? active : ''" sec:authorize="hasRole('ROLE_ANONYMOUS')">
-                <a th:href="@{/test2}">Test 2</a>
-            </li>
+<!--            <li th:class="${item == 'test1'} ? 'active' : ''" sec:authorize="hasRole('ROLE_ANONYMOUS')">-->
+<!--                <a th:href="@{/test1}">Test 1</a>-->
+<!--            </li>-->
+<!--            <li th:class="${item == 'test2'} ? active : ''" sec:authorize="hasRole('ROLE_ANONYMOUS')">-->
+<!--                <a th:href="@{/test2}">Test 2</a>-->
+<!--            </li>-->
             <li sec:authorize="hasRole('ROLE_ADMIN')">
                 <div class="divider"></div>
             </li>
@@ -49,16 +49,18 @@
                 <a th:href="@{/logout}">Выход</a>
             </li>
         </ul>
-        <div class="nav-content row">
+        <div sec:authorize="!hasRole('ROLE_ANONYMOUS')" class="nav-content row">
             <ul class="tabs tabs-transparent">
                 <li class="tab">
-                    <a th:class="${item == 'test1'} ? 'active' : ''" target="_self"
+                    <a th:class="${@entityId.call() == 1} ? 'active' : ''" target="_self"
+                       th:text="${@entities.call()[0]}"
                             onclick="EntityController.changeEntity(1)">
                         Test 1</a>
                 </li>
                 <li class="tab">
-                    <a th:class="${item == 'test2'} ? 'active' : ''" target="_self"
-                            onclick="EntityController.changeEntity(2)">
+                    <a th:class="${@entityId.call() == 2} ? 'active' : ''" target="_self"
+                       th:text="${@entities.call()[1]}"
+                       onclick="EntityController.changeEntity(2)">
                         Test 2</a>
                 </li>
             </ul>

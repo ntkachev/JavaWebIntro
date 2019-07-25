@@ -1,19 +1,18 @@
 package org.communis.javawebintro.service;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 import org.communis.javawebintro.dto.LdapAuthWrapper;
 import org.communis.javawebintro.dto.UserWrapper;
 import org.communis.javawebintro.entity.EntityContainer;
-import org.communis.javawebintro.entity.LdapAuth;
 import org.communis.javawebintro.exception.ServerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 @Service
 public class EntityService {
@@ -26,14 +25,19 @@ public class EntityService {
     public static class CurrentEntity {
         private int id = 1;
     }
-    @Autowired
-    private static CurrentEntity currentEntity = new CurrentEntity();
 
-    public static void setCurrentEntityId(int id) {
+    private CurrentEntity currentEntity = new CurrentEntity();
+
+    public void setCurrentEntityId(int id) {
         currentEntity.setId(id);
     }
 
-    public static int getCurrentEntityId() {
+    @Bean("entityId")
+    public Callable<Integer> getEntityId() {
+        return () -> currentEntity.getId();
+    }
+
+    public int getCurrentEntityId() {
         return currentEntity.getId();
     }
 
@@ -41,6 +45,15 @@ public class EntityService {
     public EntityService(UserService userService) {
         this.userService = userService;
         entities = new HashMap<>();
+    }
+
+    @Bean("entities")
+    public Callable<EntityContainer[]> getCurrentUserEntities() throws ServerException {
+        return () -> {
+            Long userId = userService.getCurrentUser().getId();
+            ensureUserHasEntities(userId);
+            return entities.get(userId);
+        };
     }
 
     public EntityContainer getEntityById(int id) throws ServerException {

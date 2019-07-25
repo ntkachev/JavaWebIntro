@@ -6,7 +6,7 @@ $(document).ready(function(){
         url: $(this).attr("action"),
         method: "POST",
         success: function (response) {
-            CallbackUtil.redirect("");
+            CallbackUtil.redirect("entities/1");
         },
         error: function (error) {
             if (error.status === 401) {

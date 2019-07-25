@@ -5,6 +5,7 @@ import org.communis.javawebintro.dto.LdapAuthWrapper;
 import org.communis.javawebintro.dto.filters.LdapAuthFilterWrapper;
 import org.communis.javawebintro.enums.UserRole;
 import org.communis.javawebintro.exception.ServerException;
+import org.communis.javawebintro.service.EntityService;
 import org.communis.javawebintro.service.LdapService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -22,14 +23,17 @@ public class LdapController {
     private String LDAP_VIEW_PATH = "admin/ldap/";
 
     private final LdapService ldapService;
+    private final EntityService entityService;
 
     @Autowired
-    public LdapController(LdapService ldapService) {
+    public LdapController(LdapService ldapService, EntityService entityService) {
         this.ldapService = ldapService;
+        this.entityService = entityService;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ModelAndView getLdapListPage(Pageable pageable, LdapAuthFilterWrapper filter) throws ServerException {
+        entityService.setCurrentToLdapList();
         ModelAndView ldapListPage = new ModelAndView(LDAP_VIEW_PATH + "list");
         ldapListPage.addObject("page", ldapService.getPageByFilter(pageable, filter));
         ldapListPage.addObject("filter", filter);
@@ -37,8 +41,10 @@ public class LdapController {
     }
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public ModelAndView add() {
-        return addFromWrapper(new LdapAuthWrapper());
+    public ModelAndView add() throws ServerException {
+        LdapAuthWrapper ldap = new LdapAuthWrapper();
+        entityService.setCurrentToLdapAddition(ldap);
+        return addFromWrapper(ldap);
     }
 
      public ModelAndView addFromWrapper(LdapAuthWrapper ldap) {
@@ -50,10 +56,12 @@ public class LdapController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable("id") Long id) throws ServerException {
-        return editFromWrapper(ldapService.getForEdit(id));
+        LdapAuthWrapper ldap = ldapService.getForEdit(id);
+        entityService.setCurrentToLdapEditing(ldap);
+        return editFromWrapper(ldap);
     }
 
-    public ModelAndView editFromWrapper(LdapAuthWrapper ldap) throws ServerException {
+    public ModelAndView editFromWrapper(LdapAuthWrapper ldap) {
         ModelAndView editPage = new ModelAndView(LDAP_VIEW_PATH + "edit");
         editPage.addObject("ldap", ldap);
         editPage.addObject("roles", UserRole.values());

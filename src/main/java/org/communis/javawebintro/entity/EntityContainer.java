@@ -114,16 +114,46 @@ public class EntityContainer implements Serializable {
         switch(type) {
             case PERSONAL:
                 return "Персональные данные";
-            case USER_ADD: case USER_EDIT:
+            case USER_ADD: {
                 UserWrapper user = (UserWrapper)entity;
-                return user.getFio();
-            case LDAPAUTH_ADD: case LDAPAUTH_EDIT:
+                String displayName = user.getFio();
+                if (displayName.isEmpty()) {
+                    return "Добавление пользователя";
+                } else {
+                    return displayName;
+                }
+            }
+            case USER_EDIT: {
+                UserWrapper user = (UserWrapper)entity;
+                String displayName = user.getFio();
+                if (displayName.isEmpty()) {
+                    return "Редактирование пользователя";
+                } else {
+                    return displayName;
+                }
+            }
+            case LDAPAUTH_ADD: {
                 LdapAuthWrapper ldap = (LdapAuthWrapper)entity;
-                return ldap.getName();
+                String displayName = ldap.getName();
+                if (displayName.isEmpty()) {
+                    return "Добавление LDAP-сервера";
+                } else {
+                    return displayName;
+                }
+            }
+            case LDAPAUTH_EDIT: {
+                LdapAuthWrapper ldap = (LdapAuthWrapper)entity;
+                String displayName = ldap.getName();
+                if (displayName.isEmpty()) {
+                    return "Изменение LDAP-сервера";
+                } else {
+                    return displayName;
+                }
+            }
             case MAIN:
                 return "Главная страница";
             case LDAPLIST:
-                return "Реестр ldap-серверов";
+                return "Реестр LDAP-серверов";
             case USERLIST:
                 return "Реестр пользователей";
         }

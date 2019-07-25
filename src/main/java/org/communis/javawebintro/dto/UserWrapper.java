@@ -13,7 +13,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class UserWrapper implements ObjectWrapper<User>, Serializable
+public class UserWrapper implements ObjectWrapper<User>
 {
     private final String EMAIL_REGEXP = "(.+@.+)";
 

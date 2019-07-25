@@ -38,17 +38,25 @@ public class LdapController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public ModelAndView add() {
+        return addFromWrapper(new LdapAuthWrapper());
+    }
+
+     public ModelAndView addFromWrapper(LdapAuthWrapper ldap) {
         ModelAndView addPage = new ModelAndView(LDAP_VIEW_PATH + "add");
-        addPage.addObject("ldap", new LdapAuthWrapper());
+        addPage.addObject("ldap", ldap);
         addPage.addObject("roles", UserRole.values());
         return addPage;
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView edit(@PathVariable("id") Long id) throws ServerException {
-        ModelAndView addPage = new ModelAndView(LDAP_VIEW_PATH + "edit");
-        addPage.addObject("ldap", ldapService.getForEdit(id));
-        addPage.addObject("roles", UserRole.values());
-        return addPage;
+        return editFromWrapper(ldapService.getForEdit(id));
+    }
+
+    public ModelAndView editFromWrapper(LdapAuthWrapper ldap) throws ServerException {
+        ModelAndView editPage = new ModelAndView(LDAP_VIEW_PATH + "edit");
+        editPage.addObject("ldap", ldap);
+        editPage.addObject("roles", UserRole.values());
+        return editPage;
     }
 }

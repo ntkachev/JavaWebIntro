@@ -43,8 +43,12 @@ public class UserController {
 
     @RequestMapping(value = "/add", method = RequestMethod.GET)
     public ModelAndView addPage() {
+        return addPageFromWrapper(new UserWrapper());
+    }
+
+    public ModelAndView addPageFromWrapper(UserWrapper user) {
         ModelAndView addPage = new ModelAndView(USER_VIEWS_PATH + "add");
-        addPage.addObject("user", new UserWrapper());
+        addPage.addObject("user", user);
         addPage.addObject("roles", UserRole.values());
         addPage.addObject("authList", UserAuth.values());
         try{
@@ -55,10 +59,14 @@ public class UserController {
         return addPage;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+        @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ModelAndView editPage(@PathVariable("id") Long id) throws ServerException {
+        return editPageFromWrapper(userService.getById(id));
+    }
+
+    public ModelAndView editPageFromWrapper(UserWrapper user) throws ServerException {
         ModelAndView editPage = new ModelAndView(USER_VIEWS_PATH + "edit");
-        editPage.addObject("user", userService.getById(id));
+        editPage.addObject("user", user);
         editPage.addObject("authList", UserAuth.values());
         try{
             editPage.addObject("ldaps", ldapService.getAllActive());

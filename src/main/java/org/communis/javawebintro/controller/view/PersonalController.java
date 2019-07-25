@@ -23,8 +23,12 @@ public class PersonalController {
 
     @RequestMapping(value = "/my", method = RequestMethod.GET)
     public ModelAndView getPersonalPage() throws ServerException {
+        return getPersonalPageFromWrapper(new UserWrapper(userService.getCurrentUser()));
+    }
+
+    public ModelAndView getPersonalPageFromWrapper(UserWrapper user) throws ServerException {
         ModelAndView modelAndView = new ModelAndView("user/my");
-        modelAndView.addObject("user", new UserWrapper(userService.getCurrentUser()));
+        modelAndView.addObject("user", user);
         modelAndView.addObject("statuses", UserStatus.values());
         modelAndView.addObject("roles", UserRole.values());
         return modelAndView;

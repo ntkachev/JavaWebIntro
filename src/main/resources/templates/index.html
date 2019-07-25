@@ -3,6 +3,7 @@
       th:with="title='Java Web Intro'">
 <head th:replace="fragments/head :: head(~{::title},~{::link}, ~{::script})">
     <title>Java Web Intro</title>
+    <script th:src="@{/static/js/entities/main.js}"></script>
 </head>
 <body>
 <header th:replace="fragments/header :: header(main, user)"></header>

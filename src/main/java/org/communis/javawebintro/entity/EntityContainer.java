@@ -135,7 +135,7 @@ public class EntityContainer implements Serializable {
             case LDAPAUTH_ADD: {
                 LdapAuthWrapper ldap = (LdapAuthWrapper)entity;
                 String displayName = ldap.getName();
-                if (displayName.isEmpty()) {
+                if (displayName == null || displayName.isEmpty()) {
                     return "Добавление LDAP-сервера";
                 } else {
                     return displayName;
@@ -144,7 +144,7 @@ public class EntityContainer implements Serializable {
             case LDAPAUTH_EDIT: {
                 LdapAuthWrapper ldap = (LdapAuthWrapper)entity;
                 String displayName = ldap.getName();
-                if (displayName.isEmpty()) {
+                if (displayName == null || displayName.isEmpty()) {
                     return "Изменение LDAP-сервера";
                 } else {
                     return displayName;

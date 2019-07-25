@@ -92,11 +92,11 @@
                     </div>
                     <div class="buttons-area col s12">
                         <button onclick="UserController.block()"
-                                th:if="${action == 'admin/users/' && user.status != T(org.communis.javawebintro.enums.UserStatus).BLOCK}"
+                                th:if="${action == 'admin/users/edit/' && user.status != T(org.communis.javawebintro.enums.UserStatus).BLOCK}"
                                 type="button" class="waves-effect waves-light btn">Заблокировать
                         </button>
                         <button onclick="UserController.unblock()"
-                                th:if="${action == 'admin/users/' && user.status == T(org.communis.javawebintro.enums.UserStatus).BLOCK}"
+                                th:if="${action == 'admin/users/edit/' && user.status == T(org.communis.javawebintro.enums.UserStatus).BLOCK}"
                                 type="button" class="waves-effect waves-light btn">Разблокировать
                         </button>
                         <button type="submit" class="waves-effect waves-light btn">Cохранить</button>

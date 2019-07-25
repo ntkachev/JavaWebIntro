@@ -9,114 +9,104 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 @Service
 public class EntityService {
 
     private UserService userService;
-    private Map<Long, EntityContainer[]> entities;
 
     @Scope("session")
     @Data
-    public static class CurrentEntity {
-        private int id = 1;
+    public static class SessionEntities {
+        private int id;
+        private EntityContainer[] entities;
+
+        public SessionEntities() {
+            id = 1;
+            entities = new EntityContainer[]{
+                    new EntityContainer(EntityContainer.Type.MAIN),
+                    new EntityContainer(EntityContainer.Type.MAIN)
+            };
+        }
     }
 
-    private CurrentEntity currentEntity = new CurrentEntity();
+    private SessionEntities sessionEntities;
 
     public void setCurrentEntityId(int id) {
-        currentEntity.setId(id);
+        sessionEntities.setId(id);
     }
 
     @Bean("entityId")
     public Callable<Integer> getEntityId() {
-        return () -> currentEntity.getId();
+        return () -> sessionEntities.getId();
     }
 
     public int getCurrentEntityId() {
-        return currentEntity.getId();
+        return sessionEntities.getId();
     }
 
     @Autowired
     public EntityService(UserService userService) {
         this.userService = userService;
-        entities = new HashMap<>();
+        sessionEntities = new SessionEntities();
     }
 
     @Bean("entities")
     public Callable<EntityContainer[]> getCurrentUserEntities() throws ServerException {
         return () -> {
-            Long userId = userService.getCurrentUser().getId();
-            ensureUserHasEntities(userId);
-            return entities.get(userId);
+            return sessionEntities.getEntities();
         };
     }
 
     public EntityContainer getEntityById(int id) throws ServerException {
-        Long userId = userService.getCurrentUser().getId();
-        ensureUserHasEntities(userId);
-        return entities.get(userId)[id-1];
+        return sessionEntities.getEntities()[id-1];
     }
 
     public void setEntity(int id, EntityContainer container) throws ServerException {
-        Long userId = userService.getCurrentUser().getId();
-        ensureUserHasEntities(userId);
-        entities.get(userId)[id-1] = container;
+        sessionEntities.getEntities()[id-1] = container;
     }
 
-    public void setCurrentEntity(EntityContainer container) throws ServerException {
+    public void setSessionEntities(EntityContainer container) throws ServerException {
         setEntity(getCurrentEntityId(), container);
     }
 
     public void setCurrentToUserAddition(UserWrapper wrapper) throws ServerException {
         EntityContainer container = new EntityContainer(wrapper, false);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToUserEditing(UserWrapper wrapper) throws ServerException {
         EntityContainer container = new EntityContainer(wrapper, false);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToPersonal(UserWrapper wrapper) throws ServerException {
         EntityContainer container = new EntityContainer(wrapper, true);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToLdapAddition(LdapAuthWrapper wrapper) throws ServerException {
         EntityContainer container = new EntityContainer(wrapper);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToLdapEditing(LdapAuthWrapper wrapper) throws ServerException {
         EntityContainer container = new EntityContainer(wrapper);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToUserList() throws ServerException {
         EntityContainer container = new EntityContainer(EntityContainer.Type.USERLIST);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
 
     public void setCurrentToLdapList() throws ServerException  {
         EntityContainer container = new EntityContainer(EntityContainer.Type.LDAPLIST);
-        setCurrentEntity(container);
+        setSessionEntities(container);
     }
     public void setCurrentToMain() throws ServerException {
         EntityContainer container = new EntityContainer(EntityContainer.Type.MAIN);
-        setCurrentEntity(container);
-    }
-
-    private void ensureUserHasEntities(Long userId) {
-        if (!entities.containsKey(userId)) {
-            entities.put(userId, new EntityContainer[] {
-                    new EntityContainer(EntityContainer.Type.MAIN),
-                    new EntityContainer(EntityContainer.Type.MAIN)
-            });
-        }
+        setSessionEntities(container);
     }
 }

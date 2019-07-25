@@ -99,7 +99,11 @@ public class UserWrapper implements ObjectWrapper<User>
     }
 
     public String getFio() {
-        return surname + " " + name + (secondName != null ? " " + secondName : "");
+        if ((name == null || name == "") && (surname == null || surname == "")) {
+            return "";
+        } else {
+            return surname + " " + name + (secondName != null ? " " + secondName : "");
+        }
     }
 
     @AssertTrue

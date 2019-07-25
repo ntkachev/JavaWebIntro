@@ -49,7 +49,7 @@
                 <a th:href="@{/logout}">Выход</a>
             </li>
         </ul>
-        <div sec:authorize="!hasRole('ROLE_ANONYMOUS')" class="nav-content row">
+        <div class="nav-content row">
             <ul class="tabs tabs-transparent">
                 <li class="tab">
                     <a th:class="${@entityId.call() == 1} ? 'active' : ''" target="_self"
